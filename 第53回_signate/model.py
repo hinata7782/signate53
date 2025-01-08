@@ -73,6 +73,23 @@ df_train_concat_xgb = df_train_concat_xgb.drop('Electrical_FuseF', axis=1)
 df_train_concat_cat = pd.concat([object, other_data_df], axis=1)
 response_variable = df_train['SalePrice']
 
+#相関係数の計算
+high_count = 0
+low_count = 0
+
+for target in df_train_concat.columns:
+    r = np.corrcoef(df_train_concat_xgb[target], response_variable)[0][1]
+    if r > 0.5 or r < -0.5:
+        print(f"強い＿相関関係 = {r:.4f}")
+        high_count += 1
+    else:
+        print(f"弱い＿相関関係 = {r:.4f}")
+        low_count += 1
+
+print(f"強い相関関係の数 = {high_count}")
+print(f"弱い相関関係の数 = {low_count}")
+
+
 #クロスバリデーション
 #非線形回帰モデル(CatBoost)を使用
 x_xgb = df_train_concat_xgb
